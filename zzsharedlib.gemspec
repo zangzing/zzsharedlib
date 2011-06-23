@@ -13,6 +13,9 @@ Gem::Specification.new do |s|
   s.description               = "Useful utility library"
   
 
+  s.add_dependency "right_aws", ">= 1.3.0"
+  s.add_dependency "json", ">= 1.5.1"
+
   s.files        = Dir.glob("{lib,zzsharedlib}/**/*") + %w(Rakefile LICENSE README.rdoc)
   s.test_files = [
   ]

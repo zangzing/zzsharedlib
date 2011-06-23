@@ -3,7 +3,10 @@ require 'rubygems'
 
 puts "zzsharedlib was included"
 
+require 'right_aws'
+require 'sdb/active_sdb'
+
+require 'zzsharedlib/monkey_patches'
 require 'zzsharedlib/amazon'
-require 'zzsharedlib/silly_test'
-
-
+require 'zzsharedlib/options'
+require 'zzsharedlib/deploy_group_simple_db'
