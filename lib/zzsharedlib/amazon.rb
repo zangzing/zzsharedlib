@@ -116,7 +116,7 @@ module ZZSharedLib
     # array of maps with
     # [{:resource_id => inst_id, :Name => "Instance Name"},...]
     #
-    def find_and_sort_named_instances(group, role)
+    def find_and_sort_named_instances(group = nil, role = nil)
       instances = {}
       describe_tags.each do |tag|
         if "instance" == tag[:resource_type]
@@ -167,7 +167,7 @@ module ZZSharedLib
     #
     # {:instance_id => { :Name => "Instance Name", :role => role},...}
     #
-    def find_named_instances(group, role)
+    def find_named_instances(group = nil, role = nil)
       remapped = {}
       instances = find_and_sort_named_instances(group, role)
       instances.each do |instance|

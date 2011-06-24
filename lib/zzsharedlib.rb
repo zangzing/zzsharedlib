@@ -6,6 +6,7 @@ puts "zzsharedlib was included"
 require 'right_aws'
 require 'sdb/active_sdb'
 
+require 'zzsharedlib/utilities'
 require 'zzsharedlib/monkey_patches'
 require 'zzsharedlib/amazon'
 require 'zzsharedlib/options'
