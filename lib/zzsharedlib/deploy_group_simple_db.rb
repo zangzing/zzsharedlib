@@ -4,7 +4,7 @@ module ZZSharedLib
 
     columns do
       zz_object_type
-      group_name
+      group
       config_json
       recipes_deploy_tag
       app_deploy_tag

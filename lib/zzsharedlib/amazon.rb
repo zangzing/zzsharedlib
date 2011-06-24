@@ -28,9 +28,9 @@ module ZZSharedLib
     # get the deploy group object from the simple db
     def find_deploy_group(group_name)
       # first see if already exists
-      deploy_group = DeployGroupSimpleDB.find_by_zz_object_type_and_group_name(DeployGroupSimpleDB.object_type, group_name, :auto_load => true)
+      deploy_group = DeployGroupSimpleDB.find_by_zz_object_type_and_group(DeployGroupSimpleDB.object_type, group_name, :auto_load => true)
 
-      if deploy_group.nil? || deploy_group[:group_name] != group_name
+      if deploy_group.nil? || deploy_group[:group] != group_name
         raise "Deploy group not found.  Make sure you specified the correct deploy group name."
       end
 
@@ -116,7 +116,7 @@ module ZZSharedLib
     # array of maps with
     # [{:resource_id => inst_id, :Name => "Instance Name"},...]
     #
-    def find_and_sort_named_instances(group = nil, role = nil)
+    def find_and_sort_named_instances(group = nil, role = nil, ready_only = true)
       instances = {}
       describe_tags.each do |tag|
         if "instance" == tag[:resource_type]
@@ -138,6 +138,7 @@ module ZZSharedLib
       instances.each_value do |inst|
         next if inst[:group].nil? ||(group.nil? == false && inst[:group] != group.to_s)
         next if inst[:role].nil? || (role.nil? == false && inst[:role] != role.to_s)
+        next if ready_only && inst[:state] != "ready"
         filtered_instances << inst
         need_describe << inst[:resource_id]
       end
@@ -167,7 +168,7 @@ module ZZSharedLib
     #
     # {:instance_id => { :Name => "Instance Name", :role => role},...}
     #
-    def find_named_instances(group = nil, role = nil)
+    def find_named_instances(group = nil, role = nil, ready_only = true)
       remapped = {}
       instances = find_and_sort_named_instances(group, role)
       instances.each do |instance|
