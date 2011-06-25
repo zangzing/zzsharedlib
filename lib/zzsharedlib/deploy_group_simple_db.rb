@@ -21,7 +21,7 @@ module ZZSharedLib
     end
 
     def config=(object)
-      self.config_json = JSON.pretty_generate(object)
+      self.config_json = JSON.fast_generate(object)
     end
 
     def save
