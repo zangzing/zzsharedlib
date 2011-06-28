@@ -8,7 +8,7 @@ module ZZSharedLib
       config_json
       recipes_deploy_tag
       app_deploy_tag
-      created_at    :default => lambda{ Time.now.strftime('%Y-%m-%dT%H:%M:%S%z') }
+      created_at
       updated_at
     end
 
@@ -21,9 +21,10 @@ module ZZSharedLib
     end
 
     def config=(object)
-      self.config_json = JSON.fast_generate(object)
+      self.config_json = JSON.pretty_generate(object)
     end
 
+    # use strings for time
     def save
       self.updated_at = Time.now.strftime('%Y-%m-%dT%H:%M:%S%z')
       super
