@@ -1,3 +1,5 @@
+require 'logger'
+
 # this class manages global stuff related to the amazon connection
 module ZZSharedLib
 
@@ -5,7 +7,7 @@ module ZZSharedLib
     attr_reader :ec2
 
     def self.ec2
-      @@ec2 ||= RightAws::Ec2.new(access_key, secret_key, :endpoint_url => 'https://ec2.us-east-1.amazonaws.com/')
+      @@ec2 ||= RightAws::Ec2.new(access_key, secret_key, :endpoint_url => 'https://ec2.us-east-1.amazonaws.com/', :logger => Amazon.logger)
     end
 
     def self.secret_key
@@ -16,13 +18,28 @@ module ZZSharedLib
       Options.get(:access_key) || ENV['AWS_ACCESS_KEY_ID']
     end
 
+    def self.log_level
+      Options.get(:log_level) || Logger::Severity::WARN
+    end
+
+    def self.make_logger
+      # need to pass in a logdev for this to work...
+      logger = Logger.new(STDOUT)
+      logger.level = log_level
+      logger
+    end
+
+    def self.logger
+      @@logger ||= make_logger
+    end
+
     def initialize(ec2 = nil)
+      connection = RightAws::ActiveSdb.establish_connection(Amazon.access_key, Amazon.secret_key, :logger => Amazon.logger)
       if ec2.nil?
         @ec2 = Amazon.ec2
       else
         @ec2 = ec2
       end
-      RightAws::ActiveSdb.establish_connection(@ec2.aws_access_key_id, @ec2.aws_secret_access_key)
     end
 
     # get the deploy group object from the simple db

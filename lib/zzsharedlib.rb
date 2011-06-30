@@ -1,8 +1,6 @@
 $:.unshift(File.dirname(__FILE__))
 require 'rubygems'
 
-puts "zzsharedlib was included"
-
 require 'right_aws'
 require 'sdb/active_sdb'
 
