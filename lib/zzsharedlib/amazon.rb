@@ -40,6 +40,7 @@ module ZZSharedLib
       else
         @ec2 = ec2
       end
+      @force_tags = true
     end
 
     # get the deploy group object from the simple db
@@ -54,27 +55,32 @@ module ZZSharedLib
       deploy_group
     end
 
+    # call this to ensure the tags come from amazon next time
+    def flush_tags
+      @force_tags = true
+    end
+
     # does a describe and returns the map, if we already have it and not doing force
     # return what we already have
     # we filter out any terminated instances
-    def describe_tags(force = false)
-      return @describe_tags if force == false && !@describe_tags.nil?
-
+    def describe_tags
+      return @describe_tags if @force_tag == false && !@describe_tags.nil?
+      @force_tags = false   # use from cache next time unless somebody resets flag
       # grab it all and filter later
       all_tags = ec2.describe_tags
 
       # filter out any terminated instances
       instances = ec2.describe_instances
-      terminated_instances = Set.new
+      ignore_instances = Set.new
       instances.each do |instance|
-        if instance[:aws_state] == 'terminated'
-          terminated_instances << instance[:aws_instance_id]
+        if instance[:aws_state] != 'running'
+          ignore_instances << instance[:aws_instance_id]
         end
       end
       filtered_tags = []
       all_tags.each do |tag|
         resource_id = tag[:resource_id]
-        filtered_tags << tag unless terminated_instances.include?(resource_id)
+        filtered_tags << tag unless ignore_instances.include?(resource_id)
       end
 
       return @describe_tags = filtered_tags

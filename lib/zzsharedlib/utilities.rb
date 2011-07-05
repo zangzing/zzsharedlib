@@ -18,6 +18,7 @@ module ZZSharedLib
     READY = "ready".freeze
     ERROR = "error".freeze
     START = "deploying".freeze
+    MAINT = "maint".freeze
     NEVER = "never".freeze
     RESTARTING = "restarting".freeze
     OK_TO_DEPLOY_STATES = [NEVER, READY, ERROR].freeze
@@ -43,6 +44,7 @@ module ZZSharedLib
         end
       end
       @amazon.ec2.create_tags(to_tag, {state_tag => state })
+      @amazon.flush_tags
     end
 
     def check_deploy_state(instances, state_tag)
