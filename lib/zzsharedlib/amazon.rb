@@ -4,10 +4,14 @@ require 'logger'
 module ZZSharedLib
 
   class Amazon
-    attr_reader :ec2
+    attr_reader :ec2, :elb
 
     def self.ec2
       @@ec2 ||= RightAws::Ec2.new(access_key, secret_key, :endpoint_url => 'https://ec2.us-east-1.amazonaws.com/', :logger => Amazon.logger)
+    end
+
+    def self.elb
+      @@elb ||= RightAws::ElbInterface.new(access_key, secret_key, :logger => Amazon.logger)
     end
 
     def self.secret_key
@@ -33,13 +37,10 @@ module ZZSharedLib
       @@logger ||= make_logger
     end
 
-    def initialize(ec2 = nil)
+    def initialize
       connection = RightAws::ActiveSdb.establish_connection(Amazon.access_key, Amazon.secret_key, :logger => Amazon.logger)
-      if ec2.nil?
-        @ec2 = Amazon.ec2
-      else
-        @ec2 = ec2
-      end
+      @ec2 = Amazon.ec2
+      @elb = Amazon.elb
       @force_tags = true
     end
 
