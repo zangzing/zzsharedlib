@@ -47,13 +47,15 @@ module ZZSharedLib
       @amazon.flush_tags
     end
 
-    def check_deploy_state(instances, state_tag)
+    def check_deploy_state(instances, state_tags)
       instances.each do |instance|
         inst_id = instance[:resource_id]
         tags = @amazon.flat_tags_for_resource(inst_id)
-        deploy_tag = tags[state_tag]
-        if !deploy_tag.nil? && !OK_TO_DEPLOY_STATES.include?(deploy_tag)
-          raise "One or more instances is still marked as deploying, we will not deploy again.  You can use --force to override"
+        state_tags.each do |state_tag|
+          deploy_tag = tags[state_tag]
+          if !deploy_tag.nil? && !OK_TO_DEPLOY_STATES.include?(deploy_tag)
+            raise "One or more instances is still marked as deploying for tag key: #{state_tag}, value: #{deploy_tag}, we will not deploy again.  You can use --force to override"
+          end
         end
       end
     end
