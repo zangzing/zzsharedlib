@@ -177,13 +177,17 @@ module ZZSharedLib
         az_hash[key] = instance
       end
       # now update the info on filtered instances
+      ready_instances = []
       filtered_instances.each do |instance|
         inst_id = instance[:resource_id]
         detail = az_hash[inst_id]
-        instance[:public_hostname] = detail[:dns_name]
-        instance[:local_hostname] = detail[:private_dns_name]
+        if !detail.nil?
+          instance[:public_hostname] = detail[:dns_name]
+          instance[:local_hostname] = detail[:private_dns_name]
+          ready_instances << instance
+        end
       end
-      return filtered_instances
+      return ready_instances
     end
 
     # similar to find_and_sort_named_instances but
