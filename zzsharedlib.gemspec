@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name                      = "zzsharedlib"
-  s.version                   = "0.0.4"
+  s.version                   = "0.0.5"
   s.platform                  = Gem::Platform::RUBY
   s.required_ruby_version     = '>= 1.8'
   s.required_rubygems_version = ">= 1.3"
